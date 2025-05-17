@@ -1,4 +1,7 @@
 # === Xcode ===
+
+git_push.sh
+
 # workspace and user-specific settings
 *.xcworkspace
 xcuserdata/
