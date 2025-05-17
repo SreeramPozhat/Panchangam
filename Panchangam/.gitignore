@@ -1,0 +1,38 @@
+# === Xcode ===
+# workspace and user-specific settings
+*.xcworkspace
+xcuserdata/
+*.xcuserstate
+# project-level scheme changes
+*.xcscmblueprint
+
+# build products & indexes
+build/
+DerivedData/
+
+# Swift Package Manager
+.build/
+
+# archives
+*.xcarchive
+
+# Swift Playgrounds
+timeline.xctimeline
+
+# === macOS ===
+.DS_Store
+
+# === Python (if you ever run scripts/bin here) ===
+__pycache__/
+*.py[cod]
+# if you use a virtualenv for scripts:
+venv/
+.env/
+
+# === Private or secrets you don’t want in git ===
+private/
+
+# === Optional editor-specific ===
+# (uncomment if you use these)
+#.vscode/
+#.idea/
