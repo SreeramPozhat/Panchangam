@@ -1,9 +1,12 @@
 # Malayalam Astrological Calendar & Panchangam
 
-![App Screenshot 1](screenshot1.png)
-![App Screenshot 2](screenshot2.png)
 
-**Accurate Malayalam calendar with astrological calculations following traditional Bharatiya timekeeping (06:30 AM = 00:00)**
+<p>
+  <img src="screenshot1.png" width="25%" style="border:1px solid #eee" alt="Malayalam Panchangam showing കർക്കിടകം 07 with thithi/nakshatra">
+  <img src="screenshot2.png" width="25%" style="border:1px solid #eee" alt="Real-time astrological chart with graha positions in rashis">
+</p>
+
+**Accurate Malayalam calendar for Mac with astrological calculations following traditional Bharatiya timekeeping (06:30 AM = 00:00)**
 
 ## 🌟 Features
 
@@ -43,3 +46,10 @@ We follow the **traditional Bharatiya astrological time** where:
 Use git clone
 point the python to your venv (top line of python file). Existing line is my system specific. Python file is located as /Panchangam/scripts/solar_calendar.48m.py
 use xcode to archive and create the same file.
+
+## ⚙️ Startup Configuration
+To launch automatically at login:
+System Settings → General → Login Items
+Click "+" and select Panchangam.app
+
+## 🤝 Contributions are welcome
