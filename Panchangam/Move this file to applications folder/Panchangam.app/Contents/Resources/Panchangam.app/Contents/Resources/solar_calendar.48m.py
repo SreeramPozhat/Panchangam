@@ -98,47 +98,68 @@ def മലയാളദിനം(input_date=None, LAT=10.7867, LON=76.6548): # Co
         """Find the previous Sankranti (zodiac entry) before the given Julian Day and return (jd_sankranti, entered_sign)"""
         കൃത്യത = 0.0003 #ഒരു വിനാഴിക കൃത്യത 
         # Check for sankranti in the interval [jd_end - 1, jd_end]
-        
-        def find_crossing(jd_low, jd_high, sign_low):
-            """Helper for binary search between two points"""
-            low, high = jd_low, jd_high
-            while high - low > കൃത്യത:
-                mid = (low + high) / 2
-                sun_pos = swe.calc_ut(mid, swe.SUN, flags=swe.FLG_SIDEREAL)
-                sign_mid = int(sun_pos[0][0] // 30)
-            
-                if sign_mid == sign_low:
-                    low = mid
-                else:
-                    high = mid
-            return (low + high) / 2
-        
         try:
             sun_pos_before = swe.calc_ut(jd_end - 1.0, swe.SUN, flags=swe.FLG_SIDEREAL)
-            sign_before = int(sun_pos_before[0][0] // 30)
+            sun_lon_before = sun_pos_before[0][0]
             sun_pos_after = swe.calc_ut(jd_end, swe.SUN, flags=swe.FLG_SIDEREAL)
-            sign_after = int(sun_pos_after[0][0] // 30)
+            sun_lon_after = sun_pos_after[0][0]
+
+            sign_before = int(sun_lon_before // 30)
+            sign_after = int(sun_lon_after // 30)
 
             if sign_before != sign_after:
-                cross_jd = find_crossing(jd_end - 1.0, jd_end, sign_before)
-                return cross_jd, sign_after
+                # Binary search to find exact crossing time
+                low = jd_end - 1.0
+                high = jd_end
+                while high - low > കൃത്യത:
+                    mid = (low + high) / 2
+                    sun_pos_mid = swe.calc_ut(mid, swe.SUN, flags=swe.FLG_SIDEREAL)
+                    sun_lon_mid = sun_pos_mid[0][0]
+                    sign_mid = int(sun_lon_mid // 30)
+
+                    if sign_mid == sign_before:
+                        low = mid
+                    else:
+                        high = mid
+
+                cross_jd = (low + high) / 2
+                entered_sign = sign_after
+                return cross_jd, entered_sign
         except Exception as e:
             raise RuntimeError(f"Error checking for sankranti: {e}")
 
         # Search backward in time (up to 40 days)
+        step = 1.0
         for i in range(1, 41):
+            jd_start = jd_end - (i + 1) * step
+            jd_mid = jd_end - i * step
             try:
-                jd_start = jd_end - (i + 1)
-                jd_mid = jd_end - i
-            
-                sun_pos_1 = swe.calc_ut(jd_start, swe.SUN, flags=swe.FLG_SIDEREAL)
-                sign1 = int(sun_pos_1[0][0] // 30)
-                sun_pos_2 = swe.calc_ut(jd_mid, swe.SUN, flags=swe.FLG_SIDEREAL)
-                sign2 = int(sun_pos_2[0][0] // 30)
+                sun_pos1 = swe.calc_ut(jd_start, swe.SUN, flags=swe.FLG_SIDEREAL)
+                sun_lon1 = sun_pos1[0][0]
+                sun_pos2 = swe.calc_ut(jd_mid, swe.SUN, flags=swe.FLG_SIDEREAL)
+                sun_lon2 = sun_pos2[0][0]
+
+                sign1 = int(sun_lon1 // 30)
+                sign2 = int(sun_lon2 // 30)
 
                 if sign1 != sign2:
-                    cross_jd = find_crossing(jd_start, jd_mid, sign1)
-                    return cross_jd, sign2
+                    # Binary search in [jd_start, jd_mid]
+                    low = jd_start
+                    high = jd_mid
+                    while high - low > കൃത്യത:
+                        mid = (low + high) / 2
+                        sun_pos_mid = swe.calc_ut(mid, swe.SUN, flags=swe.FLG_SIDEREAL)
+                        sun_lon_mid = sun_pos_mid[0][0]
+                        sign_mid = int(sun_lon_mid // 30)
+
+                        if sign_mid == sign1:
+                            low = mid
+                        else:
+                            high = mid
+
+                    cross_jd = (low + high) / 2
+                    entered_sign = sign2
+                    return cross_jd, entered_sign
             except Exception as e:
                 raise RuntimeError(f"Error during backward search: {e}")
 
@@ -211,6 +232,8 @@ def മലയാളദിനം(input_date=None, LAT=10.7867, LON=76.6548): # Co
     #return f"{'     　 : '} {കൃഷ്ണവർഷം} {malayalam_month} {malayalam_day:02d} | image={moon_image}\n" #no space comes before year if something like ":" is not used.
     സമ്പൂർണമലയാളദിനം = f"{കൃഷ്ണവർഷം} {malayalam_month} {malayalam_day:02d}"
     return സമ്പൂർണമലയാളദിനം, moon_path
+
+
 
 
 def get_tithi(jd):
@@ -741,6 +764,7 @@ def main():
         '''
         output = ""#text returned:2025-04-13 07:27, പാലക്കാട്"
         #"text returned:1994-02-02 07:27, പാലക്കാട്"
+        #"text returned:1995-01-06 22:48, വാരണാസി"
         #"text returned:2022-04-18 16:55, വാരണാസി"
         # Extract the user input (if any)
         if "text returned:" in output:
@@ -805,6 +829,8 @@ def main():
         print("Error: Check script")
         print("---")
         print(str(e))
+
+
 
 if __name__ == "__main__":
     main()

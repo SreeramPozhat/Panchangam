@@ -1,3 +1,230 @@
+import Foundation
+
+import SwiftUI
+
+struct MonthKey: Hashable {
+    let year: Int
+    let monthNumber: Int
+}
+
+struct CalendarView: View {
+    @State private var displayedMonthIndex = 0
+    @State private var initialized = false
+    private let allData: [MalayalamDay] = loadMalayalamData()
+    
+    private var calendarData: [(key: MonthKey, monthName: String, days: [MalayalamDay])] {
+        var grouped = [MonthKey: [MalayalamDay]]()
+        
+        for day in allData {
+            let key = MonthKey(year: day.mlYear, monthNumber: day.mlMonthNumber)
+            grouped[key, default: []].append(day)
+        }
+        
+        return grouped.map { (key, days) in
+            let sortedDays = days.sorted { $0.mlDay < $1.mlDay }
+            let monthName = days.first?.mlMonth ?? "Unknown"
+            return (key, monthName, sortedDays)
+        }
+        .sorted {
+            if $0.key.year != $1.key.year {
+                return $0.key.year < $1.key.year
+            }
+            return $0.key.monthNumber < $1.key.monthNumber
+        }
+    }
+
+    var body: some View {
+        let months = calendarData
+        
+        guard !months.isEmpty else {
+            return AnyView(Text("No calendar data available"))
+        }
+        
+        let currentMonth = months[displayedMonthIndex % months.count]
+        let title = "\(currentMonth.monthName) \(currentMonth.key.year)"
+        
+        return AnyView(
+            VStack(spacing: 10) {
+                // Month navigation
+                HStack {
+                    Button("←") {
+                        withAnimation {
+                            displayedMonthIndex = max(0, displayedMonthIndex - 1)
+                        }
+                    }
+                    Spacer()
+                    Text(title).font(.headline)
+                    Spacer()
+                    Button("→") {
+                        withAnimation {
+                            displayedMonthIndex = min(months.count - 1, displayedMonthIndex + 1)
+                        }
+                    }
+                }
+                .padding(.horizontal)
+                
+                // Calendar grid
+                CalendarGridView(days: currentMonth.days)
+            }
+            .frame(width: 420, height: 420)
+            .padding()
+            .onAppear {
+                if !initialized {
+                    findCurrentMonth()
+                    initialized = true
+                }
+            }
+        )
+    }
+    
+    private func findCurrentMonth() {
+        // Get UTC calendar for consistent date handling
+        var utcCalendar = Calendar(identifier: .gregorian)
+        utcCalendar.timeZone = TimeZone(secondsFromGMT: 0)!
+        
+        // Get today's date in UTC
+        let today = Date()
+        let todayComponents = utcCalendar.dateComponents([.year, .month, .day], from: today)
+        guard let todayMidnight = utcCalendar.date(from: todayComponents) else { return }
+        
+        // Find today's entry in the data
+        if let todayEntry = allData.first(where: {
+            utcCalendar.isDate($0.gregorianDate, inSameDayAs: todayMidnight)
+        }) {
+            // Create the key for today's month
+            let todayKey = MonthKey(
+                year: todayEntry.mlYear,
+                monthNumber: todayEntry.mlMonthNumber
+            )
+            
+            // Find the index of this month in our sorted list
+            if let foundIndex = calendarData.firstIndex(where: {
+                $0.key == todayKey
+            }) {
+                displayedMonthIndex = foundIndex
+            }
+        }
+    }
+}
+
+struct CalendarGridView: View {
+    let days: [MalayalamDay]
+    
+    private static var utcCalendar: Calendar = {
+        var calendar = Calendar(identifier: .gregorian)
+        calendar.timeZone = TimeZone(secondsFromGMT: 0)!
+        calendar.locale = Locale(identifier: "en_US") // Ensure English month names
+        return calendar
+    }()
+    
+    var body: some View {
+        guard let firstDate = days.first?.gregorianDate else {
+            return AnyView(Text("No days available"))
+        }
+        
+        // Calculate padding for first week using UTC calendar
+        let startWeekday = Self.utcCalendar.component(.weekday, from: firstDate)
+        let prefixCount = startWeekday - 1
+        
+        // Create unique empty cells
+        let prefix = (0..<prefixCount).map { index in
+            MalayalamDay(
+                gregorianDate: Date().addingTimeInterval(TimeInterval(index)),
+                mlYear: 0,
+                mlMonth: "",
+                mlMonthNumber: 0,
+                mlDay: 0
+            )
+        }
+        
+        let paddedDays = prefix + days
+        let columns = Array(repeating: GridItem(.flexible(), spacing: 4), count: 7)
+        
+        return AnyView(
+            LazyVGrid(columns: columns, spacing: 8) {
+                // Weekday headers
+                ForEach(["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"], id: \.self) { day in
+                    Text(day)
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                }
+                
+                // Calendar cells
+                ForEach(Array(paddedDays.enumerated()), id: \.offset) { index, day in
+                    CalendarDayCell(day: day)
+                }
+            }
+            .padding(.horizontal)
+        )
+    }
+}
+
+struct CalendarDayCell: View {
+    let day: MalayalamDay
+    
+    // UTC calendar with English month names
+    private static var utcCalendar: Calendar = {
+        var calendar = Calendar(identifier: .gregorian)
+        calendar.timeZone = TimeZone(secondsFromGMT: 0)!
+        calendar.locale = Locale(identifier: "en_US") // Ensure English month names
+        return calendar
+    }()
+    
+    var body: some View {
+        if day.mlDay == 0 {
+            Color.clear
+                .frame(height: 40)
+        } else {
+            let components = Self.utcCalendar.dateComponents([.day, .month], from: day.gregorianDate)
+            let gregDay = components.day ?? 0
+            let gregMonth = components.month ?? 0
+            let monthSymbol = Self.utcCalendar.monthSymbols[gregMonth - 1] // Get full month name
+            let showMonthName = gregDay == 1
+            
+            VStack(alignment: .leading, spacing: 2) {
+                Text("\(day.mlDay)")
+                    .font(.body)
+                Text(showMonthName ? "\(gregDay)\n\(monthSymbol)" : "\(gregDay)")
+                    .font(.caption2)
+                    .foregroundColor(.red)
+            }
+            .frame(maxWidth: .infinity, minHeight: 40)
+            .padding(6)
+            .background(Color.gray.opacity(0.1))
+            .cornerRadius(6)
+        }
+    }
+}
+
+struct MalayalamDay: Codable, Identifiable {
+    var id: UUID? = UUID()
+    let gregorianDate: Date
+    let mlYear: Int
+    let mlMonth: String
+    let mlMonthNumber: Int
+    let mlDay: Int
+}
+
+func loadMalayalamData() -> [MalayalamDay] {
+    guard let url = Bundle.main.url(forResource: "malayalam_gregorian_2025_2026", withExtension: "json"),
+          let data = try? Data(contentsOf: url) else {
+        print("Could not find JSON file")
+        return []
+    }
+
+    let decoder = JSONDecoder()
+    decoder.dateDecodingStrategy = .iso8601
+
+    do {
+        return try decoder.decode([MalayalamDay].self, from: data)
+    } catch {
+        print("JSON decoding error: \(error)")
+        return []
+    }
+}
+
+
+
 import Cocoa
 
 class AppDelegate: NSObject, NSApplicationDelegate {
@@ -209,11 +436,20 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         statusItem?.menu = menu
         lastRefreshTime = Date()
         
+        // 📆 Add calendar directly to main menu
+        let calendarItem = NSMenuItem()
+        let calendarView = CalendarView()
+        let hostingView = NSHostingView(rootView: calendarView)
+        hostingView.frame = NSRect(x: 0, y: 0, width: 420, height: 440)
+            
+        calendarItem.view = hostingView
+        menu.addItem(calendarItem)
+        
         // Add separator and Quit option
         menu.addItem(NSMenuItem.separator())
 
-        let creditItem = NSMenuItem(title: "രചന - ശ്രീരാം പോഴത് മേനോൻ", action: nil, keyEquivalent: "")
-        creditItem.isEnabled = false
+        let creditItem = NSMenuItem(title: "രചന - ശ്രീരാം പോഴത് മേനോൻ ✦", action: nil, keyEquivalent: "")
+        //creditItem.isEnabled = false
         menu.addItem(creditItem)
         
         let quitItem = NSMenuItem(title: "പഞ്ചാംഗം അടക്കൂ ❌", action: #selector(quitApp), keyEquivalent: "q")
@@ -221,6 +457,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         menu.addItem(quitItem)
 
     }
+
     
     @objc func quitApp() {
         NSApp.terminate(nil)
@@ -280,3 +517,4 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         return output.trimmingCharacters(in: .whitespacesAndNewlines)
     }
 }
+
