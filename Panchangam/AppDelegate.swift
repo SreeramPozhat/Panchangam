@@ -1,3 +1,7 @@
+// കേരള പഞ്ചാംഗം - ജ്യോതിഷനില സഹിതം (Malayalam Calendar with astrological skymap)
+// പകർപ്പവകാശം - കൃഷ്ണവർഷം 5127, ശ്രീരാം പോഴത് മേനോൻ (Copyright (C) AD 2025, Sreeram Pozhat Menon)
+// Read Licence document provided with this software for more details.
+
 import Foundation
 
 import SwiftUI
