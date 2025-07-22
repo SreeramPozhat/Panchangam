@@ -47,9 +47,12 @@ Use git clone
 point the python to your venv (top line of python file). Existing line is my system specific. Python file is located as /Panchangam/scripts/solar_calendar.48m.py
 use xcode to archive and create the same file.
 
-## ⚙️ Startup Configuration
+### ⚙️ Startup Configuration
 To launch automatically at login:
 System Settings → General → Login Items
 Click "+" and select Panchangam.app
 
-## 🤝 Contributions are welcome
+### 🤝 Contributions and Feedbacks are welcome
+
+## 📜 License - GNU Affero General Public License v3.0
+[![AGPL-3.0](https://img.shields.io/badge/License-AGPL_v3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0) 
