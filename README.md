@@ -1,4 +1,4 @@
-# Malayalam Astrological Calendar & Panchangam
+# കേരള പഞ്ചാംഗം ജ്യോതിഷനില സഹിതം (Malayalam Calendar with astrological skymap)
 
 
 <p>
@@ -43,16 +43,17 @@ We follow the **traditional Bharatiya astrological time** where:
 3. Right-click → Open (to bypass Gatekeeper on first launch)
 
 ### For Developers:
-Use git clone
-point the python to your venv (top line of python file). Existing line is my system specific. Python file is located as /Panchangam/scripts/solar_calendar.48m.py
-use xcode to archive and create the same file.
+1. Use git clone
+2. Point the python to your venv (top line of python file). Existing line is my system specific. Python file is located as /Panchangam/scripts/solar_calendar.48m.py
+3. Use xcode to archive and create the same file.
 
 ### ⚙️ Startup Configuration
-To launch automatically at login:
-System Settings → General → Login Items
-Click "+" and select Panchangam.app
+To launch automatically at login: 
+System Settings → General → Login Items --> Click "+" and select Panchangam.app
 
 ### 🤝 Contributions and Feedbacks are welcome
 
 ## 📜 License - GNU Affero General Public License v3.0
 [![AGPL-3.0](https://img.shields.io/badge/License-AGPL_v3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0) 
+- പകർപ്പവകാശം - കൃഷ്ണവർഷം 5127, ശ്രീരാം പോഴത് മേനോൻ (Copyright (C) AD 2025,  Sreeram Pozhat Menon)
+- സമ്പർക്കം - sreeram@pozhat.com
