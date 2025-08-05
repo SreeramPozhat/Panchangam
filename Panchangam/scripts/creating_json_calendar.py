@@ -1,6 +1,8 @@
 #!/Users/user/venv/bin/python
 import datetime
 import swisseph as swe
+from pathlib import Path
+import os
 
 def മലയാളദിനം(input_date=None, LAT=10.7867, LON=76.6548): # Constants for Palakkad, Kerala
     if input_date is None:
@@ -142,19 +144,57 @@ def മലയാളദിനം(input_date=None, LAT=10.7867, LON=76.6548): # Co
 
     try:
         sk_jd_sunset = get_sun_event_jd(sk_jd_start, swe.CALC_SET)
+        sk_jd_sunrise = get_sun_event_jd(sk_jd_start, swe.CALC_RISE) #സൂര്യോദയം ഉപയോഗിക്കുന്നത് മലയാളപഞ്ചാംഗത്തിന്റെ പ്രത്യേക നിയമം കണക്കാക്കാൻ.
     except ValueError as e:
         raise RuntimeError(f"Sunset calculation failed: {e}")
 
-    # Adjust first day if Sankranti occurred after sunset
-    if cross_jd >= sk_jd_sunset:
+    jd_critical = sk_jd_sunrise + 0.6 * (sk_jd_sunset - sk_jd_sunrise) #ഇതാണാ മലയാളപഞ്ചാംഗത്തിന്റെ പ്രത്യേക നിയമം.
+
+    # Adjust first day based on critical time
+    if cross_jd >= jd_critical: #ഇതിന് മുമ്പ് സൂര്യാസ്തമയം മാത്രമായിരുന്നു ഉപയോഗിച്ചിരുന്നത്. അത് പോര.
         first_day = sankranti_date_ist + datetime.timedelta(days=1)
     else:
         first_day = sankranti_date_ist
 
+    # ====== EDGE CASE HANDLER ======
+    if input_date < first_day:
+        # This is the last day of the previous month
+        # Calculate the start of the previous month
+        prev_sankranti_jd = cross_jd - 20  # took back few days.
+        prev_cross_jd, prev_entered_sign = get_previous_sankranti(prev_sankranti_jd)
+        prev_sankranti_ist = jd_to_ist(prev_cross_jd).date()
+        
+        # Get critical time for previous sankranti
+        prev_sk_dt_ist = datetime.datetime.combine(prev_sankranti_ist, datetime.time(0, 0))
+        prev_sk_dt_utc = prev_sk_dt_ist - datetime.timedelta(hours=IST_OFFSET)
+        prev_sk_jd_start = swe.julday(prev_sk_dt_utc.year, prev_sk_dt_utc.month, 
+                                     prev_sk_dt_utc.day, prev_sk_dt_utc.hour)
+        
+        prev_sk_jd_sunrise = get_sun_event_jd(prev_sk_jd_start, swe.CALC_RISE)
+        prev_sk_jd_sunset = get_sun_event_jd(prev_sk_jd_start, swe.CALC_SET)
+        prev_jd_critical = prev_sk_jd_sunrise + 0.6 * (prev_sk_jd_sunset - prev_sk_jd_sunrise)
+        
+        # Determine first day of previous month
+        if prev_cross_jd >= prev_jd_critical:
+            prev_first_day = prev_sankranti_ist + datetime.timedelta(days=1)
+        else:
+            prev_first_day = prev_sankranti_ist
+        
+        # Calculate actual day number in previous month
+        malayalam_day = (input_date - prev_first_day).days + 1
+        malayalam_month = മാസങ്ങൾ[prev_entered_sign]
+        
+        # Adjust year for previous month
+        if prev_entered_sign < 9:  # Medam to Dhanu
+            കൃഷ്ണവർഷം = prev_first_day.year + 3102
+        else:  # Makaram to Meenam
+            കൃഷ്ണവർഷം = prev_first_day.year + 3101
+        
+        return f"{കൃഷ്ണവർഷം} {malayalam_month} {malayalam_day:02d}"
+    # ====== END EDGE HANDLER ======
+
     # Calculate Malayalam day number
     malayalam_day = (input_date - first_day).days + 1
-    if malayalam_day < 1:
-        raise RuntimeError("Day calculation error: negative day")
 
     # Get month name from entered_sign
     malayalam_month = മാസങ്ങൾ[entered_sign]
@@ -183,8 +223,8 @@ import json
 from pathlib import Path
 
 output = []
-start_date = datetime.date(2025, 1, 1)
-end_date = datetime.date(2026, 12, 31)
+start_date = datetime.date(2024, 1, 1)
+end_date = datetime.date(2030, 12, 31)
 delta = datetime.timedelta(days=1)
 
 മാസങ്ങൾ = ["മേടം", "ഇടവം", "മിഥുനം", "കർക്കിടകം", "ചിങ്ങം", "കന്നി", "തുലാം", "വൃശ്ചികം", "ധനു", "മകരം", "കുംഭം", "മീനം"]
@@ -213,8 +253,11 @@ while current_date <= end_date:
         print(f"❌ Error on {current_date}: {e}")
     current_date += delta
 
+# Get the directory where THIS script is located
+script_dir = Path(__file__).parent
+# Create output path in the same directory
+output_path = script_dir / "malayalam_gregorian_2025_2026.json"
 # Save to JSON
-output_path = Path("/Users/user/Files/codes/uom/Panchangam/Panchangam/scripts/malayalam_gregorian_2025_2026.json")
 with open(output_path, "w", encoding="utf-8") as f:
     json.dump(output, f, ensure_ascii=False, indent=2)
 

@@ -18,11 +18,7 @@
 		CE8272462DD4F54200FD3505 /* Exceptions for "Panchangam" folder in "Panchangam" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
-				.gitignore,
-				git_push.sh,
 				Info.plist,
-				private/AppDelegate_exp.txt,
-				"private/Required features.txt",
 			);
 			target = CE9450FF2DD1FE5500FEA570 /* Panchangam */;
 		};
