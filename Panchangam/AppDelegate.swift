@@ -236,7 +236,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     var scriptURL: URL?
     var refreshTimer: Timer? // refresh every hour
     var lastRefreshTime: Date?
-
+    let capeVerdeTimeZone = TimeZone(secondsFromGMT: -3600)!
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         print("🚀 App Launched")
@@ -245,7 +245,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             let exists = FileManager.default.fileExists(atPath: scriptsURL.path)
             print("📦 scripts folder exists in bundle: \(exists)")
         }
-
 
         statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
 
@@ -257,21 +256,11 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
         scriptURL = url // assign to property for later access
 
-        // 🕒 Parse dynamic refresh interval from filename
-        let refreshInterval = parseRefreshInterval(from: url.lastPathComponent)
-        print("🕑 Refresh interval: \(refreshInterval) seconds")
-
-        // ⏱ Start repeating timer
-        refreshTimer = Timer.scheduledTimer(withTimeInterval: refreshInterval, repeats: true) { [weak self] _ in
-            guard let self = self, let scriptURL = self.scriptURL else {
-                print("❌ scriptURL not available during scheduled refresh")
-                return
-            }
-            self.refreshMenuBar(using: scriptURL)
-        }
-
         // ⏱ Initial load
         refreshMenuBar(using: url)
+        
+        // 🔄 Schedule next refresh dynamically
+        scheduleNextRefresh()
 
         // 💤 Refresh if waking from sleep / unlock
         let center = NSWorkspace.shared.notificationCenter
@@ -279,7 +268,54 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         center.addObserver(self, selector: #selector(handleWake), name: NSWorkspace.sessionDidBecomeActiveNotification, object: nil)
     }
 
-    
+    func scheduleNextRefresh() {
+        // Cancel existing timer
+        refreshTimer?.invalidate()
+        
+        guard let scriptURL = scriptURL else {
+            print("❌ scriptURL not available for scheduling")
+            return
+        }
+        
+        let normalInterval = parseRefreshInterval(from: scriptURL.lastPathComponent)
+        let now = Date()
+        
+        // Calculate next 00:00 in UTC-1 (Cape Verde time)
+        var calendar = Calendar(identifier: .gregorian)
+        calendar.timeZone = capeVerdeTimeZone
+        let nextMidnight = calendar.nextDate(
+            after: now,
+            matching: DateComponents(hour: 0, minute: 0, second: 0),
+            matchingPolicy: .nextTime
+        )!
+        
+        let secondsToMidnight = nextMidnight.timeIntervalSince(now)
+        let nextRefreshTime: Date
+        
+        if secondsToMidnight <= normalInterval {
+            // If within normal interval of midnight, refresh at 00:00
+            nextRefreshTime = nextMidnight.addingTimeInterval(1) //60 വച്ചാൽ 00:01ന് മാറും.
+            print("⏰ Scheduling special day-change refresh at \(nextRefreshTime) (UTC-1)")
+        } else {
+            // Otherwise use normal interval
+            nextRefreshTime = now.addingTimeInterval(normalInterval)
+            print("⏱ Next normal refresh in \(normalInterval/60) minutes")
+        }
+        
+        // Calculate interval until next refresh
+        let interval = nextRefreshTime.timeIntervalSince(now)
+        
+        // Schedule the timer
+        refreshTimer = Timer.scheduledTimer(
+            withTimeInterval: interval,
+            repeats: false
+        ) { [weak self] _ in
+            guard let self = self else { return }
+            self.refreshMenuBar(using: scriptURL)
+            self.scheduleNextRefresh() // Reschedule after refresh
+        }
+    }
+
     func parseRefreshInterval(from path: String) -> TimeInterval {
         let filename = URL(fileURLWithPath: path).lastPathComponent
 
@@ -310,20 +346,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             return
         }
 
-        let interval = parseRefreshInterval(from: scriptURL.lastPathComponent)
-
-        if let last = lastRefreshTime {
-            let elapsed = Date().timeIntervalSince(last)
-            if elapsed >= interval {
-                print("🔁 Wake-triggered refresh (elapsed \(elapsed) ≥ interval \(interval))")
-                refreshMenuBar(using: scriptURL)
-            } else {
-                print("⏱ Wake-triggered check skipped (only \(elapsed) seconds passed)")
-            }
-        } else {
-            print("🔁 No previous refresh — refreshing now")
-            refreshMenuBar(using: scriptURL)
-        }
+        // Always refresh on wake/unlock and reschedule
+        print("🔁 Wake-triggered refresh")
+        refreshMenuBar(using: scriptURL)
+        scheduleNextRefresh()
     }
 
 
@@ -471,6 +497,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         if let scriptURL = getPythonScriptURL() {
             print("↻ പുതുക്കി")
             refreshMenuBar(using: scriptURL)
+            scheduleNextRefresh()
         }
     }
     

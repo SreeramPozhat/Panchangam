@@ -35,6 +35,9 @@ venv/
 # === Private or secrets you don’t want in git ===
 private/
 
+# === backup folder shortcut
+BU
+
 # === Optional editor-specific ===
 # (uncomment if you use these)
 #.vscode/
