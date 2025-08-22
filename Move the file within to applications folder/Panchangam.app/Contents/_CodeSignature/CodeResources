@@ -8,61 +8,17 @@
 		<data>
 		vxCPRgJyvO0cJYmUnhra3htB5DQ=
 		</data>
-		<key>Resources/Drik Panchang - 2024-25.ics</key>
-		<data>
-		XYj+13WZVJfCPzJZWSUNYNUSWLE=
-		</data>
-		<key>Resources/Panchangam.app/Contents/Info.plist</key>
-		<data>
-		X73CjKU4V+j1aBukLpJLBKJ8M+M=
-		</data>
-		<key>Resources/Panchangam.app/Contents/MacOS/Panchangam</key>
-		<data>
-		l4cNM5t3OEMGbPzfiv1wD8nHnb4=
-		</data>
-		<key>Resources/Panchangam.app/Contents/PkgInfo</key>
-		<data>
-		n57qDP4tZfLD1rCS43W0B4LQjzE=
-		</data>
-		<key>Resources/Panchangam.app/Contents/Resources/AppIcon.icns</key>
-		<data>
-		vxCPRgJyvO0cJYmUnhra3htB5DQ=
-		</data>
-		<key>Resources/Panchangam.app/Contents/Resources/Required features.txt</key>
-		<data>
-		7Hx3XeeypyMuHJMmb8FcJnbg8Og=
-		</data>
-		<key>Resources/Panchangam.app/Contents/Resources/chart_output.png</key>
-		<data>
-		N6y77JEtYztwOlt6Ad0lntu7nPU=
-		</data>
-		<key>Resources/Panchangam.app/Contents/Resources/moon_output.png</key>
-		<data>
-		2nokUce5qPIq7V2lWqKHC9NEZ94=
-		</data>
-		<key>Resources/Panchangam.app/Contents/Resources/solar_calendar.48m.py</key>
-		<data>
-		BaZBsgoDKTJxIq73IFk5NZ60FUQ=
-		</data>
-		<key>Resources/Panchangam.app/Contents/_CodeSignature/CodeResources</key>
-		<data>
-		eBGPjILqaBP8od0jB1yyQ4RL/UQ=
-		</data>
 		<key>Resources/chart_output.png</key>
 		<data>
 		zlliUcMyDw44sx/iglDNbrVTDHg=
 		</data>
-		<key>Resources/creating_calendar.py</key>
-		<data>
-		e5svEGe6YamMmdkpwDaxVK+GrJE=
-		</data>
 		<key>Resources/creating_json_calendar.py</key>
 		<data>
-		e5svEGe6YamMmdkpwDaxVK+GrJE=
+		Qm+fRs3GaW3HsL7BzSgFXjjRltk=
 		</data>
 		<key>Resources/malayalam_gregorian_2025_2026.json</key>
 		<data>
-		+DIgkuk2uNzTp8vfyJCGm1Ms/X8=
+		SURJ2ZhMgBtkoESV8RH7tNlPiy8=
 		</data>
 		<key>Resources/moon_output.png</key>
 		<data>
@@ -70,7 +26,7 @@
 		</data>
 		<key>Resources/solar_calendar.48m.py</key>
 		<data>
-		vg5GiErpLf5DszfHZ511qYJDm+k=
+		25uU4w7juNswy7S9fNGzCSqUpRs=
 		</data>
 	</dict>
 	<key>files2</key>
@@ -82,76 +38,6 @@
 			57NlWPBdpAlEzzgK/wXkwxPe5twnoknXogAoIM89JwE=
 			</data>
 		</dict>
-		<key>Resources/Drik Panchang - 2024-25.ics</key>
-		<dict>
-			<key>hash2</key>
-			<data>
-			L5on7s5eMWucDe3kKZ5tWNl9p6dMzSAFBY7uqpo989A=
-			</data>
-		</dict>
-		<key>Resources/Panchangam.app/Contents/Info.plist</key>
-		<dict>
-			<key>hash2</key>
-			<data>
-			7Bn/w/K6El1ykoI2jF5VDm4PErne2UdEOP3a6pRvHoQ=
-			</data>
-		</dict>
-		<key>Resources/Panchangam.app/Contents/MacOS/Panchangam</key>
-		<dict>
-			<key>hash2</key>
-			<data>
-			Nu1ArbNtiW3NCYMNUV+4yXRqE6P843nS2f3W9LrnwnQ=
-			</data>
-		</dict>
-		<key>Resources/Panchangam.app/Contents/PkgInfo</key>
-		<dict>
-			<key>hash2</key>
-			<data>
-			glAhkclISwTWhTdPmHmgBmBpxJuKyuegSwHTjQfo7KA=
-			</data>
-		</dict>
-		<key>Resources/Panchangam.app/Contents/Resources/AppIcon.icns</key>
-		<dict>
-			<key>hash2</key>
-			<data>
-			57NlWPBdpAlEzzgK/wXkwxPe5twnoknXogAoIM89JwE=
-			</data>
-		</dict>
-		<key>Resources/Panchangam.app/Contents/Resources/Required features.txt</key>
-		<dict>
-			<key>hash2</key>
-			<data>
-			Qh5uq5UO5vmQaFK/INlUyfEhsygcBgJ0L+m3r+z0ogQ=
-			</data>
-		</dict>
-		<key>Resources/Panchangam.app/Contents/Resources/chart_output.png</key>
-		<dict>
-			<key>hash2</key>
-			<data>
-			hnHcxkyohM12Bys6VGvXczTu0Z2i3R/mmhzPWFOj2GY=
-			</data>
-		</dict>
-		<key>Resources/Panchangam.app/Contents/Resources/moon_output.png</key>
-		<dict>
-			<key>hash2</key>
-			<data>
-			HSoqss8GgUaMHwh8h/KudeR5V6XDSPEYGh93nUXfG8U=
-			</data>
-		</dict>
-		<key>Resources/Panchangam.app/Contents/Resources/solar_calendar.48m.py</key>
-		<dict>
-			<key>hash2</key>
-			<data>
-			n6PHppJQrKox08XLMP21NS0voPu0E3qKIBToXF3+Yog=
-			</data>
-		</dict>
-		<key>Resources/Panchangam.app/Contents/_CodeSignature/CodeResources</key>
-		<dict>
-			<key>hash2</key>
-			<data>
-			vV9gq/NvJgXNq6YjU3cZW8zFisZP4651E1Qint6qHaY=
-			</data>
-		</dict>
 		<key>Resources/chart_output.png</key>
 		<dict>
 			<key>hash2</key>
@@ -159,25 +45,18 @@
 			VQAM/IGyB6noXiFmpMSqB94xXDU0VTqSEByKHJrodrQ=
 			</data>
 		</dict>
-		<key>Resources/creating_calendar.py</key>
-		<dict>
-			<key>hash2</key>
-			<data>
-			vzN9HatkRVTAXnLGIEc+eQ4mtP+KLahlrRSFCfDYruc=
-			</data>
-		</dict>
 		<key>Resources/creating_json_calendar.py</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			vzN9HatkRVTAXnLGIEc+eQ4mtP+KLahlrRSFCfDYruc=
+			S3lfviPx1VAAtOpFBNauZBgtz6MTQQPMwpwCTmJff2o=
 			</data>
 		</dict>
 		<key>Resources/malayalam_gregorian_2025_2026.json</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			I8yf1ksMhWXSxK4XhuEOVibqUTHaQqt5g2zkHZ5ge8U=
+			h4EKI/bJYKd10u//KELwuf2cdbZU0P2qqZcZtaoD3x8=
 			</data>
 		</dict>
 		<key>Resources/moon_output.png</key>
@@ -191,7 +70,7 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			wQgzYtb7snEheeWkwE9wcDiYWedEDl6kT6NUU17H3pY=
+			YvnWUM8x53M26mi+KpppK2mfpTGgT/ocW/2uku+lewM=
 			</data>
 		</dict>
 	</dict>

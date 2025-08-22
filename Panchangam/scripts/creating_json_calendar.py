@@ -219,12 +219,16 @@ def മലയാളദിനം(input_date=None, LAT=10.7867, LON=76.6548): # Co
 
 
 
+
+
+
+
 import json
 from pathlib import Path
 
 output = []
 start_date = datetime.date(2024, 1, 1)
-end_date = datetime.date(2030, 12, 31)
+end_date = datetime.date(2051, 3, 15)
 delta = datetime.timedelta(days=1)
 
 മാസങ്ങൾ = ["മേടം", "ഇടവം", "മിഥുനം", "കർക്കിടകം", "ചിങ്ങം", "കന്നി", "തുലാം", "വൃശ്ചികം", "ധനു", "മകരം", "കുംഭം", "മീനം"]
@@ -256,7 +260,7 @@ while current_date <= end_date:
 # Get the directory where THIS script is located
 script_dir = Path(__file__).parent
 # Create output path in the same directory
-output_path = script_dir / "malayalam_gregorian_2025_2026.json"
+output_path = script_dir / "മലയാളം_gregorian.json"
 # Save to JSON
 with open(output_path, "w", encoding="utf-8") as f:
     json.dump(output, f, ensure_ascii=False, indent=2)

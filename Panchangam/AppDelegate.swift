@@ -210,7 +210,7 @@ struct MalayalamDay: Codable, Identifiable {
 }
 
 func loadMalayalamData() -> [MalayalamDay] {
-    guard let url = Bundle.main.url(forResource: "malayalam_gregorian_2025_2026", withExtension: "json"),
+    guard let url = Bundle.main.url(forResource: "മലയാളം_gregorian", withExtension: "json"),
           let data = try? Data(contentsOf: url) else {
         print("Could not find JSON file")
         return []
@@ -474,6 +474,12 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             
         calendarItem.view = hostingView
         menu.addItem(calendarItem)
+        
+        // 🌞 "മറ്റു വിവരങ്ങൾ" എന്ന ഉപ-വികല്പം ചേർക്കുക
+        let otherDetailsItem = NSMenuItem(title: "അന്യവിവരങ്ങൾ", action: nil, keyEquivalent: "")
+        let otherDetailsSubMenu = NSMenu()
+            
+
         
         // Add separator and Quit option
         menu.addItem(NSMenuItem.separator())
