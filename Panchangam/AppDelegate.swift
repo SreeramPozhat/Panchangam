@@ -478,8 +478,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         // 🌞 "മറ്റു വിവരങ്ങൾ" എന്ന ഉപ-വികല്പം ചേർക്കുക
         let otherDetailsItem = NSMenuItem(title: "അന്യവിവരങ്ങൾ", action: nil, keyEquivalent: "")
         let otherDetailsSubMenu = NSMenu()
-            
-
+        //സൂര്യചന്ദ്രഉദയാസ്തമയസമയങ്ങൾ ചേർക്കണം
         
         // Add separator and Quit option
         menu.addItem(NSMenuItem.separator())
